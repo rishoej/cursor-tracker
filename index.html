@@ -1,0 +1,91 @@
+<html>
+<head>
+  <style>
+    #mouse{
+      width:20px;
+      height:20px;
+      position:absolute;
+    }
+  </style>
+</head>
+<body>
+  <button id="replay">Replay</button>
+  <button id="reset">Reset</button>
+
+  <img id="mouse" src="https://d30y9cdsu7xlg0.cloudfront.net/png/117712-200.png"/>
+  <div id="x">x:</div>
+  <div id="y">y:</div>
+  <div id="screen"></div>
+</body>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g=" crossorigin="anonymous"></script>
+<script>
+var screenX = [];
+var screenY = [];
+var cordinatesX = [];
+var cordinatesY = [];
+var cordinatesXDone = [];
+var cordinatesYDone = [];
+var x = 0;
+var y = 0;
+
+function getScreenResolution(){
+	screenX = window.screen.availWidth;
+  screenY = window.screen.availHeight;
+  $('#screen').html('Screen:' + screenX + 'x' + screenY);
+}
+
+function getCoordinates(x,y){
+	$('#mouse').css({
+      top: x +'px',
+      left: y +'px',
+	});
+}
+
+function reset(){
+	var cordinatesX = [];
+  var cordinatesY = [];
+	var cordinatesXDone = [];
+	var cordinatesYDone = [];
+  var cordinatesLength = 0;
+}
+
+getScreenResolution();
+
+$(document).on('mousemove', function(e){
+  x = e.pageX;
+  y = e.pageY;
+  $('#x').html('x:' + x);
+  $('#y').html('y:' + y);
+});
+
+window.setInterval(function(e){ 
+  cordinatesX.push(x);
+  cordinatesY.push(y); 
+}, 100);
+
+$('#replay').on('click', function(){
+  var i = 0;
+  cordinatesXDone = cordinatesX.reverse();
+  cordinatesYDone = cordinatesY.reverse();
+  cordinatesLength = cordinatesX.length;
+
+  var replay = window.setInterval(function(){ 
+    console.log(cordinatesXDone.length);
+    if(i < cordinatesLength){
+      getCoordinates(cordinatesXDone[i],cordinatesYDone[i]);
+      i++;
+    } else{
+      reset();
+      clearInterval(replay);
+      return false;
+    }
+  }, 100);
+
+
+	$('#reset').on('click', function(){
+    clearInterval(replay);
+    reset();
+	});
+});
+</script>
+</html>
